@@ -1,4 +1,4 @@
-package com.gshockv.kt_search_repos;
+package com.gshockv.ktsrepos;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
