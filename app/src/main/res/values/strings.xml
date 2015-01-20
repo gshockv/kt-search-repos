@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">kt-search-repos</string>
+    <string name="app_title">Search Repos</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
