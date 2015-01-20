@@ -1,0 +1,16 @@
+.gradle
+local.properties
+/.idea/workspace.xml
+.DS_Store
+.idea/*
+build/
+
+.idea
+*.iml
+*.ipr
+*.iws
+classes
+gen-external-apklibs
+
+./gradle/local.properties
+
