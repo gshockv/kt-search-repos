@@ -3,7 +3,6 @@ package com.gshockv.ktsrepos.io
 import android.content.Context
 import retrofit.http.GET
 import retrofit.Callback
-import com.gshockv.ktsrepos.io.model.SearchRespoEnvelope
 import retrofit.RequestInterceptor
 import retrofit.RestAdapter
 import retrofit.http.Query
@@ -19,8 +18,10 @@ public class GithubApiService() {
         val restBuilder = RestAdapter.Builder().setRequestInterceptor {
             ri -> ri.addHeader("Accept", API_HEADER)
         }
-        val rest = restBuilder.setEndpoint("https://api.github.com").setLogLevel(RestAdapter.LogLevel.FULL).build()
-        val service = rest.create(javaClass<GithubApi>())
+        val rest = restBuilder.setEndpoint("https://api.github.com")
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build()
+        private val service = rest.create(javaClass<GithubApi>())
 
         public fun searchRepos(q: String, c: Callback<SearchRespoEnvelope>) {
             service.searchRepos(q, c)
@@ -32,3 +33,6 @@ public class GithubApiService() {
         fun searchRepos(Query("q") q: String, callback: Callback<SearchRespoEnvelope>)
     }
 }
+
+public data class SearchRespoEnvelope(val items: List<Repo>)
+public data class Repo(val name: String, val fullName: String, val desctiption: String)
