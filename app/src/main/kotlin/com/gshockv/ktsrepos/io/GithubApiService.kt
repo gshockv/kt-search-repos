@@ -20,7 +20,7 @@ public class GithubApiService() {
         val rest = restBuilder.setEndpoint("https://api.github.com")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        private val api = rest.create(javaClass<GithubApi>())
+        private val api: GithubApi = rest.create(javaClass<GithubApi>())
 
         public fun searchRepos(q: String, callback: Callback<ResponseEnvelope>) {
             api.searchRepos(q, callback)

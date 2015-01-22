@@ -14,6 +14,10 @@ import android.widget.Toast
 import android.text.TextUtils
 import kotlin.properties.Delegates
 import android.view.Window
+import android.view.inputmethod.EditorInfo
+import android.os.IBinder
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 
 public class MainActivity : Activity() {
 
@@ -27,8 +31,17 @@ public class MainActivity : Activity() {
     }
 
     private fun initUi() {
-        editText = findViewById(R.id.edit_repo) as EditText
         textLog = findViewById(R.id.txt_log) as TextView
+        editText = findViewById(R.id.edit_repo) as EditText
+        editText.setOnEditorActionListener { (textView, actionId, keyEvent) ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    searchRepos()
+                }
+            }
+            hideSoftKeyboard(editText.getWindowToken())
+            true
+        }
 
         val btnSearch = findViewById(R.id.btn_search)
         btnSearch?.setOnClickListener {
@@ -39,20 +52,20 @@ public class MainActivity : Activity() {
     private fun searchRepos() {
         val q = editText?.value()
         val query = if (q.isEmpty()) "kotlin" else q
-        GithubApiService.searchRepos(query, callback = ResponseCallback())
-    }
 
-    inner class ResponseCallback : Callback<ResponseEnvelope> {
-        override fun success(t: ResponseEnvelope?, response: Response?) {
-            if (t == null) return
-            writeLogMessage("Found: ${t?.items?.size()} repositories\n")
-            for ((name) in t.items) {
-                writeLogMessage("$name")
+        val callback = object : Callback<ResponseEnvelope> {
+            override fun success(t: ResponseEnvelope?, response: Response?) {
+                if (t == null) return
+                writeLogMessage("Found: ${t?.items?.size()} repositories\n")
+                for ((name) in t.items) {
+                    writeLogMessage("$name")
+                }
+            }
+
+            override fun failure(error: RetrofitError?) {
             }
         }
-
-        override fun failure(error: RetrofitError?) {
-        }
+        GithubApiService.searchRepos(query, callback)
     }
 
     private fun writeLogMessage(msg: String) {
@@ -62,3 +75,8 @@ public class MainActivity : Activity() {
 
 fun TextView.clear() = this.setText("")
 fun TextView.value() = this.getText().toString()
+
+fun Activity.hideSoftKeyboard(windowToken: IBinder) {
+    val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromInputMethod(windowToken, 0)
+}
