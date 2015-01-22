@@ -6,13 +6,14 @@ import android.widget.EditText
 import android.widget.Button
 import android.widget.TextView
 import com.gshockv.ktsrepos.io.GithubApiService
-import retrofit.Callback
 import com.gshockv.ktsrepos.model.ResponseEnvelope
+import retrofit.Callback
 import retrofit.client.Response
 import retrofit.RetrofitError
 import android.widget.Toast
 import android.text.TextUtils
 import kotlin.properties.Delegates
+import android.view.Window
 
 public class MainActivity : Activity() {
 
@@ -29,17 +30,16 @@ public class MainActivity : Activity() {
         editText = findViewById(R.id.edit_repo) as EditText
         textLog = findViewById(R.id.txt_log) as TextView
 
-        val btnSearch: Button? = findViewById(R.id.btn_search) as Button
+        val btnSearch = findViewById(R.id.btn_search)
         btnSearch?.setOnClickListener {
-            textLog?.clear()
-            val q = editText?.value()
-            searchRepos(q!!)
+            searchRepos()
         }
     }
 
-    private fun searchRepos(q: String) {
-        val callback = ResponseCallback()
-        GithubApiService.searchRepos(if (q.isEmpty()) "kotlin" else q, callback = callback)
+    private fun searchRepos() {
+        val q = editText?.value()
+        val query = if (q.isEmpty()) "kotlin" else q
+        GithubApiService.searchRepos(query, callback = ResponseCallback())
     }
 
     inner class ResponseCallback : Callback<ResponseEnvelope> {
@@ -51,7 +51,8 @@ public class MainActivity : Activity() {
             }
         }
 
-        override fun failure(error: RetrofitError?) {}
+        override fun failure(error: RetrofitError?) {
+        }
     }
 
     private fun writeLogMessage(msg: String) {

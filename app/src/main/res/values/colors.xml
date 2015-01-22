@@ -3,4 +3,7 @@
     <color name="colorPrimary">#795548</color>
     <color name="colorPrimaroDark">#5D4037</color>
     <color name="colorAccent">#4CAF50</color>
+
+    <drawable name="buttonStartColor">@color/colorAccent</drawable>
+    <drawable name="buttonStartPressedColor">#ff438b45</drawable>
 </resources>
