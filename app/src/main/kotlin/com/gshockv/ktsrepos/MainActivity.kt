@@ -18,11 +18,18 @@ import android.view.inputmethod.EditorInfo
 import android.os.IBinder
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import com.gshockv.ktsrepos.model.Repo
+import android.view.View
+import android.view.ViewGroup
+import android.support.v7.widget.RecyclerView
 
 public class MainActivity : Activity() {
-
-    var textLog: TextView by Delegates.notNull()
     var editText: EditText by Delegates.notNull()
+    var recyclerRepos: RecyclerView by Delegates.notNull()
+
+    var repositories: List<Repo> by Delegates.observable(arrayListOf<Repo>(), {meta, oldItems, newItems ->
+        // TODO: adapter.notifyDataSetChanged()
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super<Activity>.onCreate(savedInstanceState)
@@ -31,7 +38,6 @@ public class MainActivity : Activity() {
     }
 
     private fun initUi() {
-        textLog = findViewById(R.id.txt_log) as TextView
         editText = findViewById(R.id.edit_repo) as EditText
         editText.setOnEditorActionListener { (textView, actionId, keyEvent) ->
             when (actionId) {
@@ -47,6 +53,9 @@ public class MainActivity : Activity() {
         btnSearch?.setOnClickListener {
             searchRepos()
         }
+
+        recyclerRepos = findViewById(R.id.rv_repos) as RecyclerView
+
     }
 
     private fun searchRepos() {
@@ -56,10 +65,7 @@ public class MainActivity : Activity() {
         val callback = object : Callback<ResponseEnvelope> {
             override fun success(t: ResponseEnvelope?, response: Response?) {
                 if (t == null) return
-                writeLogMessage("Found: ${t?.items?.size()} repositories\n")
-                for ((name) in t.items) {
-                    writeLogMessage("$name")
-                }
+
             }
 
             override fun failure(error: RetrofitError?) {
@@ -68,8 +74,26 @@ public class MainActivity : Activity() {
         GithubApiService.searchRepos(query, callback)
     }
 
-    private fun writeLogMessage(msg: String) {
-        textLog.setText(textLog.value() + "\n" + msg)
+    /**
+     * repositories list adapter
+     */
+    inner class ReposAdapter: RecyclerView.Adapter<ReposAdapter.RepoViewHolder>() {
+        override fun onCreateViewHolder(p0: ViewGroup?, p1: Int): RepoViewHolder? {
+            throw UnsupportedOperationException()
+        }
+
+        override fun onBindViewHolder(p0: RepoViewHolder?, p1: Int) {
+            throw UnsupportedOperationException()
+        }
+
+        override fun getItemCount() = repositories.size()
+
+        /**
+         * repo viewholder
+         */
+        inner class RepoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        }
     }
 }
 
