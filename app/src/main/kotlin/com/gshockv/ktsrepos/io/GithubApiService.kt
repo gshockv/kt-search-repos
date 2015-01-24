@@ -23,12 +23,15 @@ public class GithubApiService() {
         private val api: GithubApi = rest.create(javaClass<GithubApi>())
 
         public fun searchRepos(q: String, callback: Callback<ResponseEnvelope>) {
-            api.searchRepos(q, callback)
+            api.searchRepos(q, 100, callback)
         }
     }
 
     private trait GithubApi {
         GET("/search/repositories")
-        fun searchRepos(Query("q") q: String, callback: Callback<ResponseEnvelope>)
+        fun searchRepos(
+                Query("q") q: String,
+                Query("per_page") perPage: Int,
+                callback: Callback<ResponseEnvelope>)
     }
 }
