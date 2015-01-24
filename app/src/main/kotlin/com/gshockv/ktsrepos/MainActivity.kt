@@ -35,7 +35,7 @@ public class MainActivity : ActionBarActivity() {
     val repositories: ArrayList<Repo> by Delegates.observable(arrayListOf<Repo>(), {meta, oldItems, newItems ->
         adapter.notifyDataSetChanged()
     })
-    val adapter = RepositoriesAdapter(items = repositories)
+    val adapter = RepositoriesAdapter(this, items = repositories)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super<ActionBarActivity>.onCreate(savedInstanceState)
@@ -46,10 +46,9 @@ public class MainActivity : ActionBarActivity() {
     private fun initUi() {
         editText = findViewById(R.id.edit_repo) as EditText
         editText.setOnEditorActionListener { (textView, actionId, keyEvent) ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchRepos()
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> searchRepos()
             }
-            hideSoftKeyboard(editText.getWindowToken())
             true
         }
         val btnSearch = findViewById(R.id.btn_search)
@@ -69,6 +68,7 @@ public class MainActivity : ActionBarActivity() {
     }
 
     private fun searchRepos() {
+        hideSoftKeyboard(editText.getWindowToken())
         showProgressDialog()
 
         repositories.clear()
